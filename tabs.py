@@ -26,8 +26,8 @@ for root, dirs, files in os.walk(sys.argv[1], topdown=True):
             dirs.remove(dirname)
     for filename in files:
         filepath = os.path.join(root,filename)
-        print(filepath)
         if is_code(filename):
+            print("testing",filepath)
             try:
                 replace_tabs(filepath)
             except:
