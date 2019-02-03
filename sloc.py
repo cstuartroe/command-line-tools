@@ -2,15 +2,30 @@ import os
 import re
 import sys
 
-EXTS = {"C++":["cpp","h"],"Python":["py"],"Java":["java"],"Markdown":["md"],"TeX":["tex"],"Teko":["to"]}
+EXTS = [("C++",["cpp"],"//"),
+        ("C",["c"],"//"),
+        ("unknown header",["h"],"//"),
+        ("Python",["py"],"#"),
+        ("Java",["java"],"//"),
+        ("Markdown",["md","markdown"],"<!"),
+        ("TeX",["tex"],"%"),
+        ("Teko",["to"],"//"),
+        ("JS",["js"],"//"),
+        ("CSS",["css"],"/\*"),
+        ("HTML",["html"],"<!"),
+        ("TXT",["txt"],None),
+        ("Rust",["rs"],"//"),
+        ("Perl",["pl"],"#"),
+        ("Assembly",["s"],None)]
 
 class SLOCounter:
     def __init__(self):
         pass
     
-    def slo(self,code):
+    def slo(self,code,comment):
         lines = re.findall("\n[\s]*[^\s][^\n]*","\n"+code)
-        lines = [line for line in lines if not re.match("\s*(#|//)",line)]
+        if comment is not None:
+            lines = [line for line in lines if not re.match("\s*%s" % comment,line)]
         return len(lines)
 
     def files_except(self, dirname, excepts):
@@ -22,7 +37,7 @@ class SLOCounter:
             for item in contents:
                 fullpath = os.path.join(dirname,item)
                 if os.path.isfile(fullpath):
-                    files.append(fullpath)
+                    files.append(fullpath.lower())
                 else:
                     files += self.files_except(fullpath,excepts)
             return files
@@ -30,14 +45,22 @@ class SLOCounter:
     def slo_dir(self,dirname,excepts):
         excepts += ["venv","__pycache__",".git"]
         sloc_dict = {}
-        for language in EXTS.keys():
+        for language in list(zip(*EXTS))[0]:
             sloc_dict[language] = 0
             
         for filename in self.files_except(dirname,excepts):
-            for language, extensions in EXTS.items():
+            for language, extensions, comment in EXTS:
                 if any(filename.endswith("."+ext) for ext in extensions):
-                    with open(filename,"r",encoding="utf-8") as fh:
-                        sloc_dict[language] += self.slo(fh.read())
+                    try:
+                        with open(filename,"r") as fh:
+                            content = fh.read()
+                    except UnicodeDecodeError:
+                        try:
+                            with open(filename,"r",encoding="utf-8") as fh:
+                                content = fh.read()
+                        except UnicodeDecodeError:
+                            print(filename + " is positively unreadable!")
+                    sloc_dict[language] += self.slo(content,comment)
         return sloc_dict
 
     def go(self):
@@ -51,6 +74,12 @@ class SLOCounter:
 if __name__ == "__main__":
     counter = SLOCounter()
     counts = counter.go()
+    if counts["C++"] > counts["C"]:
+        counts["C++"] += counts["unknown header"]
+        counts["unknown header"] = 0
+    elif counts["C"] > counts["C++"]:
+        counts["C"] += counts["unknown header"]
+        counts["unknown header"] = 0
     for language, sloc in counts.items():
         if sloc > 0:
             print(language + ":" + (" "*(10-len(language))) + str(sloc))
