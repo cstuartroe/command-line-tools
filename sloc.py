@@ -2,23 +2,30 @@ import os
 import re
 import sys
 
-EXTS = [("C++",["cpp"],"//"),
+EXTS = [("C++",["cpp","cc"],"//"),
         ("C",["c"],"//"),
-        ("unknown header",["h"],"//"),
-        ("Python",["py"],"#"),
+        ("Assembly",["s"],None),
+        ("header",["h"],"//"),
         ("Java",["java"],"//"),
-        ("Markdown",["md","markdown"],"<!"),
-        ("TeX",["tex"],"%"),
+        ("Python",["py"],"#"),
+        ("PHP",["php"],"//"),
+        ("R",["r"],"#"),
+        ("Rust",["rs"],"//"),
+        ("Haskell",["hs"],"--"),
+        ("Perl",["pl"],"#"),
         ("Teko",["to"],"//"),
+        ("Shell",["sh"],"#"),
         ("JS",["js"],"//"),
+        ("JSON",["json"],None),
         ("CSS",["css"],"/\*"),
         ("HTML",["html"],"<!"),
+        ("XML",["xml"],"<!"),
+        ("XSLT",["xslt"],"<!"),
+        ("CSV",["csv"],None),
+        ("Markdown",["md","markdown"],"<!"),
+        ("TeX",["tex"],"%"),
         ("TXT",["txt"],None),
-        ("JSON",["json"],None),
-        ("Rust",["rs"],"//"),
-        ("Perl",["pl"],"#"),
-        ("Assembly",["s"],None),
-        ("logs",["log"],None)]
+        ("logs",["log"],None),]
 
 class SLOCounter:
     def __init__(self):
@@ -69,7 +76,7 @@ class SLOCounter:
             if not known_ext:
                 filename = os.path.split(filepath)[-1]
                 if "." in filename:
-                    unknown_exts.add(filename.split(".")[-1])
+                    unknown_exts.add("." + filename.split(".")[-1])
         return sloc_dict, unknown_exts
 
     def go(self):
@@ -84,13 +91,13 @@ if __name__ == "__main__":
     counter = SLOCounter()
     counts, unknown_exts = counter.go()
     if counts["C++"] > counts["C"]:
-        counts["C++"] += counts["unknown header"]
-        counts["unknown header"] = 0
+        counts["C++"] += counts["header"]
+        counts["header"] = 0
     elif counts["C"] > counts["C++"]:
-        counts["C"] += counts["unknown header"]
-        counts["unknown header"] = 0
+        counts["C"] += counts["header"]
+        counts["header"] = 0
     for language, sloc in counts.items():
         if sloc > 0:
             print(language + ":" + (" "*(10-len(language))) + str(sloc))
     if len(unknown_exts) > 0:
-        print("Also found extensions", ", ".join(unknown_exts)) 
+        print("Also found extensions", ", ".join(sorted(list(unknown_exts)))) 
