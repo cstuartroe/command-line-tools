@@ -47,23 +47,30 @@ class SLOCounter:
     def slo_dir(self,dirname,excepts):
         excepts += ["venv","__pycache__",".git"]
         sloc_dict = {}
+        unknown_exts = set()
         for language in list(zip(*EXTS))[0]:
             sloc_dict[language] = 0
             
-        for filename in self.files_except(dirname,excepts):
+        for filepath in self.files_except(dirname,excepts):
+            known_ext = False
             for language, extensions, comment in EXTS:
-                if any(filename.endswith("."+ext) for ext in extensions):
+                if any(filepath.endswith("."+ext) for ext in extensions):
+                    known_ext = True
                     try:
-                        with open(filename,"r") as fh:
+                        with open(filepath,"r") as fh:
                             content = fh.read()
                     except UnicodeDecodeError:
                         try:
-                            with open(filename,"r",encoding="utf-8") as fh:
+                            with open(filepath,"r",encoding="utf-8") as fh:
                                 content = fh.read()
                         except UnicodeDecodeError:
-                            print(filename + " is positively unreadable!")
+                            print(filepath + " is positively unreadable!")
                     sloc_dict[language] += self.slo(content,comment)
-        return sloc_dict
+            if not known_ext:
+                filename = os.path.split(filepath)[-1]
+                if "." in filename:
+                    unknown_exts.add(filename.split(".")[-1])
+        return sloc_dict, unknown_exts
 
     def go(self):
         dirname = sys.argv[1]
@@ -75,7 +82,7 @@ class SLOCounter:
 
 if __name__ == "__main__":
     counter = SLOCounter()
-    counts = counter.go()
+    counts, unknown_exts = counter.go()
     if counts["C++"] > counts["C"]:
         counts["C++"] += counts["unknown header"]
         counts["unknown header"] = 0
@@ -85,3 +92,5 @@ if __name__ == "__main__":
     for language, sloc in counts.items():
         if sloc > 0:
             print(language + ":" + (" "*(10-len(language))) + str(sloc))
+    if len(unknown_exts) > 0:
+        print("Also found extensions", ", ".join(unknown_exts)) 
