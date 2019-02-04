@@ -14,9 +14,11 @@ EXTS = [("C++",["cpp"],"//"),
         ("CSS",["css"],"/\*"),
         ("HTML",["html"],"<!"),
         ("TXT",["txt"],None),
+        ("JSON",["json"],None),
         ("Rust",["rs"],"//"),
         ("Perl",["pl"],"#"),
-        ("Assembly",["s"],None)]
+        ("Assembly",["s"],None),
+        ("logs",["log"],None)]
 
 class SLOCounter:
     def __init__(self):
