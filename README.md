@@ -11,7 +11,7 @@ A set of various python command line tools, intended to be added to PATH
 `sloc.py` prints out how many source lines of code in various languages are present in a directory:
 
 ```
-> sloc.py teko
+> sloc.py command-line-tools/
 
 Python:    178
 JSON:      45
