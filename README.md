@@ -13,8 +13,64 @@ A set of various python command line tools, intended to be added to PATH
 ```
 > sloc.py teko
 
-C++:       599
-Markdown:  123
-TeX:       86
+C++:       616
 Teko:      194
+Markdown:  141
+TeX:       86
+Also found extensions .exe, .gitignore, .gz, .pdf
+```
+
+## archive.py
+
+`archive.py` creates a JSON file which stores any number of metadata snapshots of a directory.
+
+```json
+> archive.py command-line-tools/
+> cat command-line-tools/archive.json
+
+{
+    "06 Feb 2019 00:24:25 UTC": {
+        "dirs": {},
+        "files": {
+            ".gitignore": {
+                "created": "19 Jan 2019 23:12:07 UTC",
+                "last modified": "19 Jan 2019 23:12:07 UTC",
+                "mode": 33206,
+                "owner": 0,
+                "size": 12
+            },
+            "README.md": {
+                "created": "02 Oct 2018 22:13:46 UTC",
+                "last modified": "03 Feb 2019 17:21:49 UTC",
+                "mode": 33206,
+                "owner": 0,
+                "size": 420
+            },
+            "archive.py": {
+                "created": "05 Feb 2019 23:09:52 UTC",
+                "last modified": "06 Feb 2019 00:12:46 UTC",
+                "mode": 33206,
+                "owner": 0,
+                "size": 2515
+            },
+            "sloc.py": {
+                "created": "19 Jan 2019 22:33:10 UTC",
+                "last modified": "04 Feb 2019 16:53:01 UTC",
+                "mode": 33206,
+                "owner": 0,
+                "size": 3671
+            },
+            "tabs.py": {
+                "created": "12 Jan 2019 00:59:32 UTC",
+                "last modified": "19 Jan 2019 23:11:36 UTC",
+                "mode": 33206,
+                "owner": 0,
+                "size": 1016
+            }
+        },
+        "total_dirs": 0,
+        "total_files": 5,
+        "total_size": 7634
+    }
+}
 ```
