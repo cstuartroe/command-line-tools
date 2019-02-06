@@ -13,11 +13,10 @@ A set of various python command line tools, intended to be added to PATH
 ```
 > sloc.py teko
 
-C++:       616
-Teko:      194
-Markdown:  141
-TeX:       86
-Also found extensions .exe, .gitignore, .gz, .pdf
+Python:    178
+JSON:      45
+Markdown:  65
+Also found extensions .gitignore
 ```
 
 ## archive.py
