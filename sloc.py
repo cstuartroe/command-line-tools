@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import os
 import re
 import sys
@@ -8,6 +10,7 @@ EXTS = [("C++",["cpp","cc"],"//"),
         ("header",["h"],"//"),
         ("Java",["java"],"//"),
         ("Python",["py"],"#"),
+        ("Go",["go"],"//"),
         ("PHP",["php"],"//"),
         ("R",["r"],"#"),
         ("Rust",["rs"],"//"),
@@ -46,7 +49,7 @@ class SLOCounter:
             for item in contents:
                 fullpath = os.path.join(dirname,item)
                 if os.path.isfile(fullpath):
-                    files.append(fullpath.lower())
+                    files.append(fullpath)
                 else:
                     files += self.files_except(fullpath,excepts)
             return files
@@ -61,18 +64,19 @@ class SLOCounter:
         for filepath in self.files_except(dirname,excepts):
             known_ext = False
             for language, extensions, comment in EXTS:
-                if any(filepath.endswith("."+ext) for ext in extensions):
+                if any(filepath.lower().endswith("."+ext) for ext in extensions):
                     known_ext = True
                     try:
                         with open(filepath,"r") as fh:
                             content = fh.read()
+                            sloc_dict[language] += self.slo(content,comment)
                     except UnicodeDecodeError:
                         try:
                             with open(filepath,"r",encoding="utf-8") as fh:
                                 content = fh.read()
+                                sloc_dict[language] += self.slo(content,comment)
                         except UnicodeDecodeError:
                             print(filepath + " is positively unreadable!")
-                    sloc_dict[language] += self.slo(content,comment)
             if not known_ext:
                 filename = os.path.split(filepath)[-1]
                 if "." in filename:
