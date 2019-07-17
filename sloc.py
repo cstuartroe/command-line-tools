@@ -14,8 +14,10 @@ EXTS = [("C++",["cpp","cc"],"//"),
         ("PHP",["php"],"//"),
         ("R",["r"],"#"),
         ("Rust",["rs"],"//"),
+        ("Ruby",["rb"],"#"),
         ("Haskell",["hs"],"--"),
         ("Perl",["pl"],"#"),
+        ("Scala",["sc","scala"],"//"),
         ("Teko",["to"],"//"),
         ("Shell",["sh"],"#"),
         ("JS",["js"],"//"),
@@ -23,12 +25,16 @@ EXTS = [("C++",["cpp","cc"],"//"),
         ("CSS",["css"],"/\*"),
         ("HTML",["html"],"<!"),
         ("XML",["xml"],"<!"),
+        ("YAML",["yml","yaml"],"#"),
         ("XSLT",["xslt"],"<!"),
+        ("Embedded Ruby",["erb"],"<!"),
         ("CSV",["csv"],None),
         ("Markdown",["md","markdown"],"<!"),
         ("TeX",["tex"],"%"),
         ("TXT",["txt"],None),
-        ("logs",["log"],None),]
+        ("logs",["log"],None),
+        ("Batchfile",["bat"],None),
+        ("Shell",["sh","bash"],None),]
 
 class SLOCounter:
     def __init__(self):
