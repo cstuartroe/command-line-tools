@@ -20,6 +20,7 @@ EXTS = [("C++",["cpp","cc"],"//"),
         ("Scala",["sc","scala"],"//"),
         ("Teko",["to"],"//"),
         ("Shell",["sh"],"#"),
+        ("SQL",["sql"],"--"),
         ("JS",["js"],"//"),
         ("JSON",["json"],None),
         ("CSS",["css"],"/\*"),
@@ -61,7 +62,7 @@ class SLOCounter:
             return files
 
     def slo_dir(self,dirname,excepts):
-        excepts += ["venv","__pycache__",".git"]
+        excepts += ["venv","__pycache__",".git",".idea","node_modules"]
         sloc_dict = {}
         unknown_exts = set()
         for language in list(zip(*EXTS))[0]:
